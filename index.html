@@ -3,687 +3,749 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MouseLab — Gaming Mice, Tested the Same Way Every Time</title>
-<meta name="description" content="Independent gaming mouse reviews and rankings, scored on sensor accuracy, click latency, build quality and value. No sponsored placements.">
+<title>Infostealer Recovery — Clean Reinstall Runbook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0d1015;
-    --bg-alt:#0f1319;
-    --panel:#12161d;
-    --panel-raised:#171c24;
-    --border:#232a35;
-    --border-hover:#3a4557;
-    --text:#e7e9ec;
-    --text-dim:#8b93a1;
-    --text-faint:#565f6c;
-    --amber:#e8a33d;
-    --amber-soft:rgba(232,163,61,.14);
-    --cyan:#5fd4d0;
-    --cyan-soft:rgba(95,212,208,.14);
-    --good:#7cc66f;
-    --bad:#e0685a;
+    --bg:#0A0D12;
+    --bg-card:#12161F;
+    --bg-card-2:#171C27;
+    --border:#232937;
+    --text:#E7EAF0;
+    --text-dim:#8891A3;
+    --text-dimmer:#5B6376;
+    --danger:#FF5C5C;
+    --danger-dim:#3A1F22;
+    --safe:#34D3A8;
+    --safe-dim:#132A26;
+    --warn:#F5B942;
+    --warn-dim:#332A15;
+    --info:#5B9DFF;
+    --info-dim:#16223A;
     --radius:14px;
-    --display:'Space Grotesk',Arial,sans-serif;
-    --body:'IBM Plex Sans',Arial,sans-serif;
-    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+    --display: 'Space Grotesk', 'Segoe UI', sans-serif;
+    --body: 'Inter', 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', 'Consolas', monospace;
   }
-
-  *{box-sizing:border-box;margin:0;padding:0;}
+  *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
-    background:
-      radial-gradient(circle at 1px 1px, rgba(255,255,255,.045) 1px, transparent 0) 0 0/28px 28px,
-      var(--bg);
+    margin:0;
+    background:var(--bg);
     color:var(--text);
     font-family:var(--body);
-    line-height:1.55;
+    line-height:1.6;
     -webkit-font-smoothing:antialiased;
   }
-  a{color:inherit;}
-  img{max-width:100%;display:block;}
-  ::selection{background:var(--amber-soft);color:var(--amber);}
-  :focus-visible{outline:2px solid var(--cyan);outline-offset:3px;}
+  a{color:var(--info);}
 
-  .wrap{width:min(1180px,92%);margin:0 auto;}
+  /* ===== Layout shell ===== */
+  .shell{
+    display:grid;
+    grid-template-columns:280px minmax(0,1fr);
+    max-width:1280px;
+    margin:0 auto;
+  }
+  @media (max-width:900px){
+    .shell{grid-template-columns:1fr;}
+    .sidebar{position:static !important; order:2; border-right:none !important; border-top:1px solid var(--border);}
+    .main{order:1;}
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar{
+    position:sticky;
+    top:0;
+    align-self:start;
+    height:100vh;
+    overflow-y:auto;
+    padding:28px 18px;
+    border-right:1px solid var(--border);
+  }
+  .brand{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--text-dimmer);
+    text-transform:uppercase;
+    margin-bottom:20px;
+  }
+  .meter-box{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:24px;
+  }
+  .meter-label{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:8px;
+  }
+  .meter-status{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:17px;
+    margin-bottom:10px;
+    color:var(--danger);
+    transition:color .4s ease;
+  }
+  .meter-track{
+    height:8px;
+    border-radius:5px;
+    background:#1C2130;
+    overflow:hidden;
+  }
+  .meter-fill{
+    height:100%;
+    width:0%;
+    border-radius:5px;
+    background:linear-gradient(90deg, var(--danger), var(--warn));
+    transition:width .5s ease, background .5s ease;
+  }
+  .meter-sub{
+    margin-top:8px;
+    font-size:12px;
+    color:var(--text-dimmer);
+  }
+
+  nav.steps{list-style:none;margin:0;padding:0;}
+  nav.steps li{margin-bottom:2px;}
+  nav.steps a{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    text-decoration:none;
+    color:var(--text-dim);
+    font-size:13.5px;
+    padding:9px 10px;
+    border-radius:8px;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav.steps a:hover{background:var(--bg-card); color:var(--text);}
+  nav.steps .num{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-dimmer);
+    width:18px;
+    flex-shrink:0;
+  }
+
+  /* ===== Main ===== */
+  .main{padding:0 28px 80px;}
+  @media (max-width:900px){.main{padding:0 18px 60px;}}
+
+  .hero{
+    padding:48px 0 28px;
+  }
   .eyebrow{
     font-family:var(--mono);
     font-size:12px;
-    letter-spacing:.14em;
+    letter-spacing:0.1em;
     text-transform:uppercase;
-    color:var(--text-faint);
+    color:var(--danger);
+    margin-bottom:14px;
   }
-  h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.01em;}
+  h1.title{
+    font-family:var(--display);
+    font-size:clamp(28px,4vw,42px);
+    line-height:1.12;
+    margin:0 0 14px;
+    letter-spacing:-0.01em;
+  }
+  .lede{
+    color:var(--text-dim);
+    font-size:16px;
+    max-width:62ch;
+    margin:0 0 28px;
+  }
 
-  /* ---------- NAV ---------- */
-  header.site{
-    position:sticky;top:0;z-index:50;
-    background:rgba(13,16,21,.82);
-    backdrop-filter:blur(10px);
+  .alert{
+    border-radius:var(--radius);
+    padding:20px 22px;
+    border:1px solid;
+    margin:22px 0;
+  }
+  .alert.danger{background:var(--danger-dim); border-color:#5A2A2E;}
+  .alert.warn{background:var(--warn-dim); border-color:#5A4A1E;}
+  .alert.info{background:var(--info-dim); border-color:#28406E;}
+  .alert.safe{background:var(--safe-dim); border-color:#1F5245;}
+  .alert-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--display);
+    font-weight:700;
+    font-size:15px;
+    margin-bottom:8px;
+  }
+  .alert.danger .alert-head{color:var(--danger);}
+  .alert.warn .alert-head{color:var(--warn);}
+  .alert.info .alert-head{color:var(--info);}
+  .alert.safe .alert-head{color:var(--safe);}
+  .alert ul{margin:6px 0 0; padding-left:20px;}
+  .alert li{margin-bottom:6px;}
+  .alert p{margin:0;}
+
+  section.step{
+    padding:52px 0 8px;
+    border-top:1px solid var(--border);
+    scroll-margin-top:20px;
+  }
+  section.step:first-of-type{border-top:none;}
+  .step-head{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:18px;
+  }
+  .step-index{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--text-dimmer);
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:5px 9px;
+    flex-shrink:0;
+    margin-top:4px;
+  }
+  h2.step-title{
+    font-family:var(--display);
+    font-size:24px;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .step-body{padding-left:0;}
+
+  .card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px 22px;
+    margin:16px 0;
+  }
+  .card h3{
+    font-family:var(--display);
+    font-size:15px;
+    margin:0 0 10px;
+    color:var(--text);
+  }
+
+  .checklist{list-style:none; margin:0; padding:0;}
+  .checklist li{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:10px 0;
     border-bottom:1px solid var(--border);
   }
-  .nav-row{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:16px 0;
-  }
-  .logo{
-    display:flex;align-items:center;gap:10px;
-    font-family:var(--display);font-weight:700;font-size:19px;
-    letter-spacing:-.01em;
-  }
-  .logo-mark{
-    width:22px;height:22px;border:1.5px solid var(--amber);border-radius:5px;
-    position:relative;flex:none;
-  }
-  .logo-mark::before,.logo-mark::after{
-    content:"";position:absolute;background:var(--amber);
-  }
-  .logo-mark::before{left:4px;right:4px;top:9px;height:2px;}
-  .logo-mark::after{top:4px;bottom:4px;left:9px;width:2px;}
-  .logo small{
-    display:block;font-family:var(--mono);font-weight:400;font-size:10px;
-    letter-spacing:.12em;color:var(--text-faint);text-transform:uppercase;
-  }
-  nav.links{display:flex;gap:28px;font-size:14px;}
-  nav.links a{
-    color:var(--text-dim);text-decoration:none;
-    padding:6px 0;border-bottom:1px solid transparent;
-    transition:.2s;
-  }
-  nav.links a:hover{color:var(--text);border-color:var(--border-hover);}
-  @media(max-width:820px){nav.links{display:none;}}
-
-  /* ---------- HERO ---------- */
-  .hero{padding:72px 0 40px;border-bottom:1px solid var(--border);}
-  .hero-grid{
-    display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:end;
-  }
-  .hero h1{
-    font-size:clamp(34px,4.6vw,54px);
-    line-height:1.06;
-    margin:14px 0 20px;
-  }
-  .hero h1 em{
-    font-style:normal;color:var(--amber);
-  }
-  .hero p.lede{
-    color:var(--text-dim);font-size:17px;max-width:52ch;
-  }
-  .hero-cta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap;}
-  .btn{
-    font-family:var(--mono);font-size:13px;letter-spacing:.04em;
-    padding:12px 20px;border-radius:9px;text-decoration:none;
-    display:inline-flex;align-items:center;gap:8px;
-    border:1px solid var(--border-hover);transition:.2s;
-  }
-  .btn.primary{background:var(--amber);color:#1a1305;border-color:var(--amber);font-weight:600;}
-  .btn.primary:hover{background:#f0b158;}
-  .btn.ghost{color:var(--text-dim);}
-  .btn.ghost:hover{color:var(--text);border-color:var(--text-dim);}
-
-  .readout{
-    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
-    padding:22px;
-  }
-  .readout .eyebrow{margin-bottom:14px;}
-  .readout-row{
-    display:flex;justify-content:space-between;align-items:baseline;
-    padding:11px 0;border-bottom:1px dashed var(--border);
-    font-family:var(--mono);font-size:13px;
-  }
-  .readout-row:last-child{border-bottom:none;}
-  .readout-row span:first-child{color:var(--text-dim);}
-  .readout-row span:last-child{color:var(--cyan);font-weight:600;}
-
-  /* ---------- METHOD STRIP ---------- */
-  .method{padding:56px 0;border-bottom:1px solid var(--border);}
-  .method-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:28px;flex-wrap:wrap;}
-  .method-head h2{font-size:26px;}
-  .method-head p{color:var(--text-dim);font-size:14px;max-width:44ch;}
-  .method-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-  .method-col{background:var(--panel);padding:24px 22px;}
-  .method-col .num{font-family:var(--mono);color:var(--amber);font-size:13px;}
-  .method-col h3{font-size:16px;margin:10px 0 8px;}
-  .method-col p{color:var(--text-dim);font-size:13.5px;}
-  @media(max-width:900px){.method-cols{grid-template-columns:1fr 1fr;}}
-  @media(max-width:560px){.method-cols{grid-template-columns:1fr;}}
-
-  /* ---------- RANKINGS ---------- */
-  .rankings{padding:60px 0;border-bottom:1px solid var(--border);}
-  .section-head{margin-bottom:22px;}
-  .section-head h2{font-size:28px;margin-bottom:8px;}
-  .section-head p{color:var(--text-dim);font-size:14.5px;max-width:60ch;}
-
-  .filters{display:flex;gap:10px;margin:22px 0;flex-wrap:wrap;}
-  .filter{
-    font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;
-    padding:8px 14px;border-radius:20px;border:1px solid var(--border);
-    background:transparent;color:var(--text-dim);cursor:pointer;transition:.15s;
-  }
-  .filter:hover{border-color:var(--border-hover);color:var(--text);}
-  .filter.active{background:var(--amber-soft);border-color:var(--amber);color:var(--amber);}
-
-  table.rank-table{width:100%;border-collapse:collapse;font-size:14px;}
-  table.rank-table thead th{
-    text-align:left;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--text-faint);font-weight:500;
-    padding:0 14px 12px;border-bottom:1px solid var(--border);
-  }
-  table.rank-table tbody tr{border-bottom:1px solid var(--border);transition:.15s;}
-  table.rank-table tbody tr:hover{background:var(--panel);}
-  table.rank-table td{padding:16px 14px;vertical-align:middle;}
-  table.rank-table td.rk{font-family:var(--mono);color:var(--text-faint);width:34px;}
-  table.rank-table td.name a{text-decoration:none;font-weight:600;}
-  table.rank-table td.name a:hover{color:var(--cyan);}
-  table.rank-table td.name span{display:block;font-size:12px;color:var(--text-dim);margin-top:2px;}
-  .score-cell{display:flex;align-items:center;gap:10px;min-width:120px;}
-  .score-track{flex:1;height:6px;background:var(--border);border-radius:4px;overflow:hidden;}
-  .score-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--amber));width:0;border-radius:4px;transition:width 1s cubic-bezier(.2,.8,.2,1);}
-  .score-num{font-family:var(--mono);font-size:12.5px;color:var(--text-dim);width:30px;text-align:right;}
-  td.mono{font-family:var(--mono);color:var(--text-dim);font-size:13px;}
-
-  /* ---------- REVIEWS ---------- */
-  .reviews{padding:70px 0;border-bottom:1px solid var(--border);}
-  .review-card{
-    background:var(--panel);border:1px solid var(--border);border-radius:20px;
-    padding:36px;margin-bottom:28px;
-    display:grid;grid-template-columns:340px 1fr;gap:36px;
-    scroll-margin-top:90px;
+  .checklist li:last-child{border-bottom:none;}
+  .checklist input[type=checkbox]{
+    appearance:none;
+    width:19px;
+    height:19px;
+    flex-shrink:0;
+    margin-top:2px;
+    border:1.5px solid var(--text-dimmer);
+    border-radius:5px;
+    background:transparent;
+    cursor:pointer;
     position:relative;
+    transition:border-color .15s ease, background .15s ease;
   }
-  @media(max-width:880px){.review-card{grid-template-columns:1fr;}}
-
-  .shot{
-    background:
-      linear-gradient(var(--bg-alt),var(--bg-alt)),
-      radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 0) 0 0/16px 16px;
-    background-blend-mode:normal;
-    border:1px solid var(--border);border-radius:14px;
-    min-height:230px;position:relative;
-    display:flex;align-items:center;justify-content:center;
-    color:var(--text-faint);font-family:var(--mono);font-size:12px;text-align:center;
-    letter-spacing:.04em;
+  .checklist input[type=checkbox]:checked{
+    background:var(--safe);
+    border-color:var(--safe);
   }
-  .shot .corner{position:absolute;width:16px;height:16px;border:1.5px solid var(--border-hover);}
-  .shot .corner.tl{top:10px;left:10px;border-right:none;border-bottom:none;}
-  .shot .corner.tr{top:10px;right:10px;border-left:none;border-bottom:none;}
-  .shot .corner.bl{bottom:10px;left:10px;border-right:none;border-top:none;}
-  .shot .corner.br{bottom:10px;right:10px;border-left:none;border-top:none;}
-  .shot span{padding:0 30px;line-height:1.6;}
+  .checklist input[type=checkbox]:checked::after{
+    content:"";
+    position:absolute;
+    left:5px; top:1px;
+    width:5px; height:10px;
+    border:solid #06140F;
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  .checklist input[type=checkbox]:focus-visible{outline:2px solid var(--info); outline-offset:2px;}
+  .checklist label{cursor:pointer; font-size:14.5px;}
+  .checklist label .fine{display:block; color:var(--text-dimmer); font-size:12.5px; margin-top:2px;}
+  .checklist li.checked label{color:var(--text-dimmer); text-decoration:line-through;}
 
-  .stamp{
-    position:absolute;top:-14px;right:28px;
-    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--amber);border:1.5px dashed var(--amber);border-radius:50px;
-    padding:6px 14px;background:var(--bg);transform:rotate(4deg);
+  code, .kbd, .mono{font-family:var(--mono);}
+  .kbd{
+    display:inline-block;
+    background:#1C2130;
+    border:1px solid var(--border);
+    border-bottom-width:2px;
+    padding:2px 7px;
+    border-radius:6px;
+    font-size:12.5px;
+    color:var(--text);
+  }
+  code{
+    background:#1C2130;
+    padding:2px 6px;
+    border-radius:5px;
+    font-size:13px;
+    color:var(--safe);
   }
 
-  .rev-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
-  .rev-head h3{font-size:23px;}
-  .rev-head .tag{font-family:var(--mono);font-size:12px;color:var(--cyan);background:var(--cyan-soft);padding:5px 10px;border-radius:6px;white-space:nowrap;}
-  .verdict{
-    font-size:15px;color:var(--text-dim);margin:14px 0 18px;padding-left:14px;
-    border-left:2px solid var(--amber);
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:14px 0;
+    font-size:13.5px;
   }
-  .verdict strong{color:var(--text);font-weight:600;}
-
-  .meters{display:grid;grid-template-columns:1fr 1fr;gap:14px 26px;margin:20px 0;}
-  .meter label{
-    display:flex;justify-content:space-between;font-family:var(--mono);font-size:11.5px;
-    color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;
+  th,td{
+    text-align:left;
+    padding:10px 12px;
+    border-bottom:1px solid var(--border);
   }
-  .meter label b{color:var(--text-dim);font-weight:500;}
-  .meter-track{
-    height:7px;border-radius:4px;background:var(--border);position:relative;overflow:hidden;
-    background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 1px,transparent 1px 10%);
+  th{
+    font-family:var(--mono);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--text-dimmer);
   }
-  .meter-fill{height:100%;width:0;border-radius:4px;background:var(--cyan);transition:width 1.1s cubic-bezier(.2,.8,.2,1);}
+  tr:last-child td{border-bottom:none;}
 
-  .pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:22px 0;}
-  .pc-grid h4{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
-  .pc-grid.pros h4{color:var(--good);}
-  .pc-grid ul{list-style:none;font-size:13.5px;color:var(--text-dim);}
-  .pc-grid li{padding-left:16px;position:relative;margin-bottom:6px;}
-  .pc-grid li::before{content:"+";position:absolute;left:0;color:var(--good);font-weight:600;}
-  .cons li::before{content:"–";color:var(--bad);}
-  @media(max-width:520px){.pc-grid{grid-template-columns:1fr;}.meters{grid-template-columns:1fr;}}
-
-  .rev-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-top:22px;padding-top:20px;border-top:1px solid var(--border);}
-  .rev-foot .who{font-size:13px;color:var(--text-dim);}
-  .rev-foot .who b{color:var(--text);}
-  .price{font-family:var(--mono);font-size:19px;color:var(--amber);}
-  .price small{color:var(--text-faint);font-size:12px;font-weight:400;}
-
-  /* ---------- COMPARISONS ---------- */
-  .compare{padding:64px 0;border-bottom:1px solid var(--border);}
-  .vs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:24px;}
-  .vs-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px;}
-  .vs-title{font-family:var(--mono);font-size:13px;color:var(--text-dim);margin-bottom:10px;}
-  .vs-title b{color:var(--text);}
-  .vs-card p{font-size:14px;color:var(--text-dim);}
-  .vs-card a{color:var(--cyan);font-family:var(--mono);font-size:12.5px;text-decoration:none;display:inline-block;margin-top:12px;}
-  @media(max-width:700px){.vs-grid{grid-template-columns:1fr;}}
-
-  /* ---------- GLOSSARY ---------- */
-  .glossary{padding:64px 0;border-bottom:1px solid var(--border);}
-  .qa{border-bottom:1px solid var(--border);}
-  .qa summary{
-    cursor:pointer;list-style:none;padding:18px 0;font-family:var(--display);font-weight:600;
-    font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:20px;
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--text);
+    color:#0A0D12;
+    text-decoration:none;
+    font-weight:600;
+    font-size:14px;
+    padding:11px 18px;
+    border-radius:10px;
+    margin:6px 8px 6px 0;
+    transition:transform .12s ease, opacity .12s ease;
   }
-  .qa summary::-webkit-details-marker{display:none;}
-  .qa summary::after{content:"+";font-family:var(--mono);color:var(--amber);font-size:20px;transition:.2s;}
-  .qa[open] summary::after{transform:rotate(45deg);}
-  .qa p{padding:0 0 20px;color:var(--text-dim);font-size:14.5px;max-width:70ch;}
-
-  /* ---------- FOOTER ---------- */
-  footer{padding:44px 0 60px;}
-  .foot-grid{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;font-size:13px;color:var(--text-faint);}
-  .foot-grid a{color:var(--text-dim);text-decoration:none;}
-  .foot-grid a:hover{color:var(--text);}
-  .foot-cols{display:flex;gap:50px;flex-wrap:wrap;}
-  .foot-cols div h5{font-family:var(--mono);color:var(--text-dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
-  .foot-cols div a{display:block;margin-bottom:7px;}
-  .disclosure{margin-top:34px;padding-top:22px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text-faint);max-width:68ch;}
-
-  @media(prefers-reduced-motion:reduce){
-    *{transition:none !important;scroll-behavior:auto !important;}
+  .btn:hover{transform:translateY(-1px); opacity:.92;}
+  .btn.secondary{
+    background:transparent;
+    color:var(--text);
+    border:1px solid var(--border);
   }
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:700px){.two-col{grid-template-columns:1fr;}}
+
+  .pill{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:11px;
+    padding:3px 9px;
+    border-radius:999px;
+    background:var(--bg-card-2);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    margin-right:6px;
+  }
+
+  footer{
+    padding:40px 0 60px;
+    color:var(--text-dimmer);
+    font-size:13px;
+    border-top:1px solid var(--border);
+    margin-top:40px;
+  }
+
+  ::selection{background:#2A3550;}
 </style>
 </head>
 <body>
 
-<header class="site">
-  <div class="wrap nav-row">
-    <div class="logo">
-      <span class="logo-mark" aria-hidden="true"></span>
-      <div>MouseLab<small>Precision gear testing</small></div>
+<div class="shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="brand">Incident Runbook</div>
+
+    <div class="meter-box">
+      <div class="meter-label"><span>System status</span><span id="meterPct">0%</span></div>
+      <div class="meter-status" id="meterStatus">COMPROMISED</div>
+      <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
+      <div class="meter-sub">Updates as you check off steps below.</div>
     </div>
-    <nav class="links">
-      <a href="#rankings">Rankings</a>
-      <a href="#reviews">Reviews</a>
-      <a href="#compare">Comparisons</a>
-      <a href="#glossary">Glossary</a>
+
+    <nav class="steps">
+      <li><a href="#first"><span class="num">00</span>Do this first</a></li>
+      <li><a href="#onepc"><span class="num">01</span>Only have one PC?</a></li>
+      <li><a href="#backup"><span class="num">02</span>Back up safely</a></li>
+      <li><a href="#download"><span class="num">03</span>Get the Windows ISO</a></li>
+      <li><a href="#rufus"><span class="num">04</span>Build the USB (Rufus)</a></li>
+      <li><a href="#boot"><span class="num">05</span>Boot from USB</a></li>
+      <li><a href="#install"><span class="num">06</span>Install Windows clean</a></li>
+      <li><a href="#after"><span class="num">07</span>Lock everything down</a></li>
+      <li><a href="#prevent"><span class="num">08</span>Stay clean going forward</a></li>
     </nav>
-  </div>
-</header>
+  </aside>
 
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <p class="eyebrow">Gaming mouse test lab — 2026 rankings</p>
-      <h1>Every mouse runs the <em>same four tests.</em> No exceptions.</h1>
-      <p class="lede">We score sensor accuracy, click latency, build quality, and value on a fixed rubric — so a $40 mouse and a $160 mouse are judged on the same scale, not on marketing copy.</p>
-      <div class="hero-cta">
-        <a class="btn primary" href="#rankings">See current rankings ↓</a>
-        <a class="btn ghost" href="#method">How we test →</a>
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+
+    <div class="hero">
+      <div class="eyebrow">Malware incident response</div>
+      <h1 class="title">You ran an infostealer.<br>Here's exactly how to fix it.</h1>
+      <p class="lede">Infostealers scrape saved passwords, browser cookies, autofill data, crypto wallets, and session tokens, then send them to an attacker. Antivirus alone can't guarantee removal, because you can't be certain everything it touched is gone. The reliable fix is to <strong>wipe the drive and reinstall Windows from scratch</strong>. This guide walks through the whole process, from the moment you realize something's wrong to being fully back up and running.</p>
+
+      <div class="alert danger" id="first">
+        <div class="alert-head">⛔ Do this in the next 5 minutes</div>
+        <ul>
+          <li><strong>Disconnect the infected device from the internet</strong> — pull the ethernet cable or turn off Wi-Fi. This stops the malware from sending out any more data or downloading follow-up payloads.</li>
+          <li><strong>Don't log into anything else on this device.</strong> Every password you type on a compromised machine can be captured. Do your password changes later, from a different, clean device (a phone on mobile data works).</li>
+          <li><strong>Don't panic-delete files.</strong> Deleting things at random won't remove the infection and can make it harder to recover anything you need. A full reinstall handles this properly.</li>
+        </ul>
       </div>
     </div>
-    <div class="readout">
-      <p class="eyebrow">Bench readout — live rubric</p>
-      <div class="readout-row"><span>Sensor accuracy</span><span>±0.2% max error</span></div>
-      <div class="readout-row"><span>Click latency</span><span>tested @ 1000–8000Hz</span></div>
-      <div class="readout-row"><span>Build sample</span><span>3 units per model</span></div>
-      <div class="readout-row"><span>Mice tracked</span><span>current: 4 · db growing</span></div>
-    </div>
-  </div>
-</section>
 
-<section class="method" id="method">
-  <div class="wrap">
-    <div class="method-head">
-      <h2>How we score a mouse</h2>
-      <p>Four categories, weighted evenly, turned into one comparable number out of 10.</p>
-    </div>
-    <div class="method-cols">
-      <div class="method-col">
-        <span class="num">01</span>
-        <h3>Sensor accuracy</h3>
-        <p>Tracked against a controlled surface pass to check for smoothing, jitter, and DPI drift at the sensor's rated range.</p>
+    <!-- ================= STEP: ONLY ONE PC ================= -->
+    <section class="step" id="onepc">
+      <div class="step-head">
+        <div class="step-index">01</div>
+        <h2 class="step-title">No other computer available? Here's how to make the media safely on the infected PC</h2>
       </div>
-      <div class="method-col">
-        <span class="num">02</span>
-        <h3>Click &amp; input latency</h3>
-        <p>End-to-end click response measured across polling rates, including wireless mice at both 1000Hz and 8000Hz where supported.</p>
-      </div>
-      <div class="method-col">
-        <span class="num">03</span>
-        <h3>Build &amp; materials</h3>
-        <p>Shell flex, switch consistency after repeated clicks, cable or dongle quality, and coating durability under sweat and grip.</p>
-      </div>
-      <div class="method-col">
-        <span class="num">04</span>
-        <h3>Value</h3>
-        <p>Performance relative to street price, not MSRP — and whether a cheaper model in the same class gets you 90% of the result.</p>
-      </div>
-    </div>
-  </div>
-</section>
+      <div class="step-body">
+        <p>Building the installer on a clean device is the ideal, but it isn't always possible. If this infected machine is the only computer you have, you can still create the USB installer on it — the key is to treat it as one short, single-purpose task, not a return to normal use.</p>
 
-<section class="rankings" id="rankings">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>2026 gaming mouse rankings</h2>
-      <p>Ranked by overall bench score. Filter by what you're actually optimizing for — a competitive FPS pick and a budget pick don't need to be the same mouse.</p>
-    </div>
-    <div class="filters" role="group" aria-label="Filter rankings">
-      <button class="filter active" data-filter="all">All</button>
-      <button class="filter" data-filter="budget">Budget</button>
-      <button class="filter" data-filter="lightweight">Lightweight</button>
-      <button class="filter" data-filter="competitive">Competitive</button>
-      <button class="filter" data-filter="allround">All-round</button>
-    </div>
+        <div class="alert info">
+          <div class="alert-head">ℹ Why this is still reasonably safe</div>
+          <p>An infostealer is after data it can capture while you're logged into accounts or typing credentials — it isn't going to corrupt the Windows ISO you download or sabotage a USB drive. As long as you don't log into anything or enter any passwords during this window, there's very little for it to grab, and the reinstall in step 06 wipes the machine clean regardless.</p>
+        </div>
 
-    <table class="rank-table">
-      <thead>
-        <tr>
-          <th>#</th><th>Mouse</th><th>Score</th><th>Price</th><th>Weight</th><th>Sensor</th><th>Best for</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-cat="competitive allround">
-          <td class="rk">01</td>
-          <td class="name"><a href="#viper-v3-pro">Razer Viper V3 Pro</a><span>Wireless · Symmetrical</span></td>
-          <td><div class="score-cell"><div class="score-track"><div class="score-fill" data-score="94"></div></div><span class="score-num">9.4</span></div></td>
-          <td class="mono">$160</td>
-          <td class="mono">54g</td>
-          <td class="mono">Focus Pro 35K</td>
-          <td class="mono">Competitive FPS</td>
-        </tr>
-        <tr data-cat="allround competitive">
-          <td class="rk">02</td>
-          <td class="name"><a href="#superlight-2">G Pro X Superlight 2</a><span>Wireless · Ergonomic</span></td>
-          <td><div class="score-cell"><div class="score-track"><div class="score-fill" data-score="90"></div></div><span class="score-num">9.0</span></div></td>
-          <td class="mono">$159</td>
-          <td class="mono">60g</td>
-          <td class="mono">HERO 2</td>
-          <td class="mono">All-round premium</td>
-        </tr>
-        <tr data-cat="lightweight budget">
-          <td class="rk">03</td>
-          <td class="name"><a href="#attack-shark-x3">Attack Shark X3</a><span>Wireless · Symmetrical</span></td>
-          <td><div class="score-cell"><div class="score-track"><div class="score-fill" data-score="84"></div></div><span class="score-num">8.4</span></div></td>
-          <td class="mono">$40</td>
-          <td class="mono">49g</td>
-          <td class="mono">PAW3395</td>
-          <td class="mono">Lightweight on a budget</td>
-        </tr>
-        <tr data-cat="budget">
-          <td class="rk">04</td>
-          <td class="name"><a href="#g305">Logitech G305</a><span>Wireless · Ergonomic</span></td>
-          <td><div class="score-cell"><div class="score-track"><div class="score-fill" data-score="78"></div></div><span class="score-num">7.8</span></div></td>
-          <td class="mono">$40</td>
-          <td class="mono">99g</td>
-          <td class="mono">HERO</td>
-          <td class="mono">First wireless upgrade</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
+        <div class="card">
+          <h3>Reconnect, but only for this</h3>
+          <ul class="checklist">
+            <li><input type="checkbox" id="o1"><label for="o1">Reconnect to the internet only long enough to complete this step, then disconnect again immediately afterward — you don't need to stay online once both files are downloaded</label></li>
+            <li><input type="checkbox" id="o2"><label for="o2">If you can use a phone's mobile hotspot instead of your home Wi-Fi for this download, that's a slightly cleaner option, though not essential</label></li>
+          </ul>
+        </div>
 
-<section class="reviews" id="reviews">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Full reviews</h2>
-      <p>Each score below breaks down the same four categories from the rubric above, so you can see exactly where a mouse wins or loses.</p>
-    </div>
+        <div class="card">
+          <h3>Open a private browsing window</h3>
+          <ul class="checklist">
+            <li><input type="checkbox" id="o3"><label for="o3">Open an InPrivate / Incognito window (<span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">N</span> in Chrome/Edge, <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">P</span> in Firefox) before doing anything else
+              <span class="fine">This keeps saved passwords from auto-filling and keeps the session separate from your normal browsing.</span></label></li>
+            <li><input type="checkbox" id="o4"><label for="o4">Don't log into any account in this window — no email, no Microsoft account, nothing. You don't need to be logged into anything to download an ISO or Rufus</label></li>
+          </ul>
+        </div>
 
-    <!-- VIPER V3 PRO -->
-    <article class="review-card" id="viper-v3-pro">
-      <span class="stamp">Editor's pick</span>
-      <div class="shot">
-        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-        <span>PRODUCT PHOTO<br>Razer Viper V3 Pro — top &amp; side angle, 1200×900</span>
-      </div>
-      <div class="rev-body">
-        <div class="rev-head">
-          <h3>Razer Viper V3 Pro</h3>
-          <span class="tag">Rank #1 · Competitive</span>
+        <div class="card">
+          <h3>Go straight to the source</h3>
+          <ul class="checklist">
+            <li><input type="checkbox" id="o5"><label for="o5">Type the addresses directly rather than searching for them: <code>microsoft.com/software-download/windows11</code> and <code>rufus.ie</code>
+              <span class="fine">Searching for "download Windows ISO" or "download Rufus" can surface look-alike sites or malicious ads above the real result — going direct avoids that entirely.</span></label></li>
+            <li><input type="checkbox" id="o6"><label for="o6">Download the Windows ISO from Microsoft and the Rufus executable from rufus.ie, and nothing else — don't browse elsewhere while you're online</label></li>
+          </ul>
         </div>
-        <p class="verdict"><strong>Buy this if</strong> you play at a competitive level and want the lowest latency available at any weight — you're paying for the sensor and switches, not extras.</p>
-        <div class="meters">
-          <div class="meter"><label><span>Sensor accuracy</span><b>9.6</b></label><div class="meter-track"><div class="meter-fill" data-w="96"></div></div></div>
-          <div class="meter"><label><span>Click latency</span><b>9.7</b></label><div class="meter-track"><div class="meter-fill" data-w="97"></div></div></div>
-          <div class="meter"><label><span>Build quality</span><b>9.1</b></label><div class="meter-track"><div class="meter-fill" data-w="91"></div></div></div>
-          <div class="meter"><label><span>Value</span><b>8.2</b></label><div class="meter-track"><div class="meter-fill" data-w="82"></div></div></div>
-        </div>
-        <div class="pc-grid">
-          <div class="pros"><h4>Pros</h4><ul>
-            <li>Fastest click response we've measured in this class</li>
-            <li>54g shell with no rattle or flex under fast flicks</li>
-            <li>HyperPolling dongle scales cleanly to 8000Hz</li>
-          </ul></div>
-          <div class="cons"><h4>Cons</h4><ul>
-            <li>Symmetrical shape won't suit heavy palm grips</li>
-            <li>8000Hz mode noticeably shortens battery life</li>
-          </ul></div>
-        </div>
-        <div class="rev-foot">
-          <div class="who">Best for <b>Valorant, CS2, competitive FPS</b></div>
-          <div class="price">$160<small>street price</small></div>
-        </div>
-      </div>
-    </article>
 
-    <!-- SUPERLIGHT 2 -->
-    <article class="review-card" id="superlight-2">
-      <div class="shot">
-        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-        <span>PRODUCT PHOTO<br>G Pro X Superlight 2 — top &amp; side angle, 1200×900</span>
-      </div>
-      <div class="rev-body">
-        <div class="rev-head">
-          <h3>Logitech G Pro X Superlight 2</h3>
-          <span class="tag">Rank #2 · All-round</span>
+        <div class="card">
+          <h3>Verify what you downloaded, then go offline</h3>
+          <ul class="checklist">
+            <li><input type="checkbox" id="o7"><label for="o7">Right-click the Rufus .exe → <strong>Properties</strong> → <strong>Digital Signatures</strong> tab and confirm it's signed by "Akeo Consulting" (Rufus's publisher) before running it</label></li>
+            <li><input type="checkbox" id="o8"><label for="o8">Once both downloads finish, disconnect from the internet again (Wi-Fi off / cable out) before you run Rufus and build the USB drive</label></li>
+            <li><input type="checkbox" id="o9"><label for="o9">Close the private browsing window entirely once you're done — this clears that session</label></li>
+          </ul>
         </div>
-        <p class="verdict"><strong>Buy this if</strong> you want one mouse for everything — FPS, MMO, and daily use — with an ergonomic shape most hands adapt to quickly.</p>
-        <div class="meters">
-          <div class="meter"><label><span>Sensor accuracy</span><b>9.4</b></label><div class="meter-track"><div class="meter-fill" data-w="94"></div></div></div>
-          <div class="meter"><label><span>Click latency</span><b>9.0</b></label><div class="meter-track"><div class="meter-fill" data-w="90"></div></div></div>
-          <div class="meter"><label><span>Build quality</span><b>9.3</b></label><div class="meter-track"><div class="meter-fill" data-w="93"></div></div></div>
-          <div class="meter"><label><span>Value</span><b>7.5</b></label><div class="meter-track"><div class="meter-fill" data-w="75"></div></div></div>
-        </div>
-        <div class="pc-grid">
-          <div class="pros"><h4>Pros</h4><ul>
-            <li>HERO 2 sensor is essentially error-free at any DPI</li>
-            <li>Shape works for claw, fingertip, and relaxed palm grips</li>
-            <li>Excellent LIGHTSPEED battery life at 1000Hz</li>
-          </ul></div>
-          <div class="cons"><h4>Cons</h4><ul>
-            <li>No 4000Hz+ polling without the separate Lightspeed dongle upgrade</li>
-            <li>Price rarely drops much below MSRP</li>
-          </ul></div>
-        </div>
-        <div class="rev-foot">
-          <div class="who">Best for <b>players who want one mouse, period</b></div>
-          <div class="price">$159<small>street price</small></div>
-        </div>
-      </div>
-    </article>
 
-    <!-- ATTACK SHARK X3 -->
-    <article class="review-card" id="attack-shark-x3">
-      <span class="stamp">Best value</span>
-      <div class="shot">
-        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-        <span>PRODUCT PHOTO<br>Attack Shark X3 — top &amp; side angle, 1200×900</span>
-      </div>
-      <div class="rev-body">
-        <div class="rev-head">
-          <h3>Attack Shark X3</h3>
-          <span class="tag">Rank #3 · Lightweight</span>
-        </div>
-        <p class="verdict"><strong>Buy this if</strong> you want a sub-50g wireless mouse without paying flagship prices — the sensor punches well above its $40 tag.</p>
-        <div class="meters">
-          <div class="meter"><label><span>Sensor accuracy</span><b>8.8</b></label><div class="meter-track"><div class="meter-fill" data-w="88"></div></div></div>
-          <div class="meter"><label><span>Click latency</span><b>8.1</b></label><div class="meter-track"><div class="meter-fill" data-w="81"></div></div></div>
-          <div class="meter"><label><span>Build quality</span><b>7.6</b></label><div class="meter-track"><div class="meter-fill" data-w="76"></div></div></div>
-          <div class="meter"><label><span>Value</span><b>9.8</b></label><div class="meter-track"><div class="meter-fill" data-w="98"></div></div></div>
-        </div>
-        <div class="pc-grid">
-          <div class="pros"><h4>Pros</h4><ul>
-            <li>49g shell with a PAW3395 sensor rarely seen this cheap</li>
-            <li>Rechargeable — no AA battery weight penalty</li>
-            <li>Shell holes are covered, so no dust/debris complaints</li>
-          </ul></div>
-          <div class="cons"><h4>Cons</h4><ul>
-            <li>Side buttons feel mushy compared to premium mice</li>
-            <li>Coating shows palm grease faster than soft-touch finishes</li>
-          </ul></div>
-        </div>
-        <div class="rev-foot">
-          <div class="who">Best for <b>budget-conscious FPS players</b></div>
-          <div class="price">$40<small>street price</small></div>
+        <div class="alert warn">
+          <div class="alert-head">⚠ Stay focused on the one task</div>
+          <p>Resist the urge to check email or social media "while you're online anyway." This window should be: reconnect → download two files in a private window → verify → disconnect. Once the USB drive is built, continue with the rest of this guide exactly as written — everything from here on works the same regardless of which machine made the installer.</p>
         </div>
       </div>
-    </article>
+    </section>
 
-    <!-- G305 -->
-    <article class="review-card" id="g305">
-      <div class="shot">
-        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-        <span>PRODUCT PHOTO<br>Logitech G305 — top &amp; side angle, 1200×900</span>
+    <!-- ================= STEP 1: BACKUP ================= -->
+    <section class="step" id="backup">
+      <div class="step-head">
+        <div class="step-index">02</div>
+        <h2 class="step-title">Back up your files — carefully</h2>
       </div>
-      <div class="rev-body">
-        <div class="rev-head">
-          <h3>Logitech G305 LIGHTSPEED</h3>
-          <span class="tag">Rank #4 · Budget</span>
-        </div>
-        <p class="verdict"><strong>Buy this if</strong> it's your first wireless mouse and you want something that just works for months on one AA battery, weight be damned.</p>
-        <div class="meters">
-          <div class="meter"><label><span>Sensor accuracy</span><b>8.6</b></label><div class="meter-track"><div class="meter-fill" data-w="86"></div></div></div>
-          <div class="meter"><label><span>Click latency</span><b>7.9</b></label><div class="meter-track"><div class="meter-fill" data-w="79"></div></div></div>
-          <div class="meter"><label><span>Build quality</span><b>8.3</b></label><div class="meter-track"><div class="meter-fill" data-w="83"></div></div></div>
-          <div class="meter"><label><span>Value</span><b>8.9</b></label><div class="meter-track"><div class="meter-fill" data-w="89"></div></div></div>
-        </div>
-        <div class="pc-grid">
-          <div class="pros"><h4>Pros</h4><ul>
-            <li>Up to ~250 hours per AA battery in our runtime test</li>
-            <li>HERO sensor still holds up years after release</li>
-            <li>One of the most reliable 2.4GHz connections we've tested</li>
-          </ul></div>
-          <div class="cons"><h4>Cons</h4><ul>
-            <li>99g is heavy next to modern sub-60g competitors</li>
-            <li>No onboard 8000Hz support</li>
-          </ul></div>
-        </div>
-        <div class="rev-foot">
-          <div class="who">Best for <b>Minecraft, casual FPS, office-to-gaming upgrades</b></div>
-          <div class="price">$40<small>street price</small></div>
-        </div>
-      </div>
-    </article>
-  </div>
-</section>
+      <div class="step-body">
+        <p>Reinstalling Windows erases the drive, so grab what you need first. The goal is to save your <em>personal files</em> without dragging the infection along with them.</p>
 
-<section class="compare" id="compare">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Head-to-head comparisons</h2>
-      <p>The matchups people actually search before buying.</p>
-    </div>
-    <div class="vs-grid">
-      <div class="vs-card">
-        <div class="vs-title"><b>G305</b> vs <b>Attack Shark X3</b></div>
-        <p>Both cost about $40. The X3 is lighter and has the newer sensor; the G305 wins on battery life and connection reliability. If weight matters more than runtime, take the X3.</p>
-        <a href="#">Read the full comparison →</a>
-      </div>
-      <div class="vs-card">
-        <div class="vs-title"><b>Viper V3 Pro</b> vs <b>Superlight 2</b></div>
-        <p>The Viper edges out on raw latency and 8000Hz polling; the Superlight 2's shape fits a wider range of grips. Shape should decide this one before spec sheets do.</p>
-        <a href="#">Read the full comparison →</a>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="card">
+          <h3>Safe to back up</h3>
+          <ul class="checklist">
+            <li>
+              <input type="checkbox" id="b1"><label for="b1">Documents, spreadsheets, PDFs
+              <span class="fine">Copy the whole Documents folder if you like — plain data files can't run code on their own.</span></label>
+            </li>
+            <li>
+              <input type="checkbox" id="b2"><label for="b2">Photos and videos
+              <span class="fine">Same logic — media files are not executable and are effectively safe to carry over.</span></label>
+            </li>
+            <li>
+              <input type="checkbox" id="b3"><label for="b3">Anything else you'd genuinely miss, minus the categories below</label>
+            </li>
+          </ul>
+        </div>
 
-<section class="glossary" id="glossary">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Terms worth knowing</h2>
-      <p>Short answers, no fluff.</p>
-    </div>
-    <details class="qa" open>
-      <summary>What is polling rate?</summary>
-      <p>How often your mouse reports its position to your PC, measured in Hz. 1000Hz means it reports 1,000 times per second. Higher polling can lower click latency slightly, but the gain shrinks fast past 1000Hz for most players.</p>
-    </details>
-    <details class="qa">
-      <summary>Does 8000Hz actually matter?</summary>
-      <p>It reduces the small delay between a physical click and the signal reaching your PC, but the difference versus 1000Hz is a few milliseconds — noticeable at a competitive level, close to unnoticeable for casual play, and it costs battery life on wireless mice.</p>
-    </details>
-    <details class="qa">
-      <summary>What grip style should I use?</summary>
-      <p>Palm grip rests your whole hand on the mouse and suits larger, heavier shapes. Claw grip arches the fingers and works well with shorter mice. Fingertip grip only touches with fingertips and favors light, symmetrical shapes. Try each with a mouse you already own before buying based on grip alone.</p>
-    </details>
-    <details class="qa">
-      <summary>Does DPI matter more than sensor accuracy?</summary>
-      <p>Not really. Almost every modern sensor tracks accurately well past the DPI most players actually use (800–1600). A cheap sensor at high DPI is still a cheap sensor — accuracy and consistency matter more than the DPI ceiling on the box.</p>
-    </details>
-  </div>
-</section>
+        <div class="alert warn">
+          <div class="alert-head">⚠ Leave these behind</div>
+          <ul>
+            <li><strong>Browser profiles, saved passwords, and cookies</strong> — this is exactly what the infostealer targeted. Don't copy your browser's user data folder to your new install.</li>
+            <li><strong>.exe, .msi, .bat, .scr, or unfamiliar installer files</strong> — don't carry over anything you downloaded around the time things started acting weird.</li>
+            <li><strong>Anything from your Downloads folder you don't specifically recognize and need.</strong></li>
+          </ul>
+        </div>
 
-<footer>
-  <div class="wrap">
-    <div class="foot-grid">
-      <div>
-        <div class="logo" style="margin-bottom:10px;">
-          <span class="logo-mark" aria-hidden="true"></span>
-          <div>MouseLab</div>
-        </div>
-        <p style="max-width:32ch;">Independent gaming mouse testing. We buy what we review.</p>
-      </div>
-      <div class="foot-cols">
-        <div>
-          <h5>Browse</h5>
-          <a href="#rankings">Rankings</a>
-          <a href="#reviews">Reviews</a>
-          <a href="#compare">Comparisons</a>
-          <a href="#glossary">Glossary</a>
-        </div>
-        <div>
-          <h5>By use case</h5>
-          <a href="#">Best for FPS</a>
-          <a href="#">Best for MMO</a>
-          <a href="#">Best budget picks</a>
+        <div class="card">
+          <h3>How to move it over</h3>
+          <p>Copy your personal files to a USB drive or external hard drive (a different one from the one you'll use for Windows in the next step). Once you're on your freshly installed, clean system, plug the backup drive in and let your antivirus scan it before you open anything from it. This catches the rare case where a document itself was booby-trapped.</p>
         </div>
       </div>
-    </div>
-    <p class="disclosure">MouseLab © 2026. Some links may be affiliate links — if you buy through them we may earn a commission at no extra cost to you. This never affects a score; scores are locked before we write the pros/cons.</p>
-  </div>
-</footer>
+    </section>
+
+    <!-- ================= STEP 2: DOWNLOAD ISO ================= -->
+    <section class="step" id="download">
+      <div class="step-head">
+        <div class="step-index">03</div>
+        <h2 class="step-title">Download an official Windows ISO</h2>
+      </div>
+      <div class="step-body">
+        <p>Always get your installer straight from Microsoft — never from a third-party "download" site, which is a common way people get reinfected. If you're not sure which version you're licensed for, Windows 11 is the safe default for any PC made in the last few years; Windows 10 still receives support if your hardware doesn't meet Windows 11's requirements.</p>
+
+        <div class="two-col">
+          <div class="card">
+            <h3>Windows 11</h3>
+            <p style="color:var(--text-dim); font-size:13.5px;">Official Microsoft download page — choose "Download Windows 11 Disk Image (ISO)."</p>
+            <a class="btn" href="https://www.microsoft.com/software-download/windows11" target="_blank" rel="noopener">Get Windows 11 ISO ↗</a>
+          </div>
+          <div class="card">
+            <h3>Windows 10</h3>
+            <p style="color:var(--text-dim); font-size:13.5px;">Official Microsoft download page — choose "Download Windows 10 Disk Image (ISO)."</p>
+            <a class="btn secondary" href="https://www.microsoft.com/software-download/windows10" target="_blank" rel="noopener">Get Windows 10 ISO ↗</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>On the Microsoft page</h3>
+          <p>Select your edition, choose your language, then click <strong>64-bit Download</strong>. The file is roughly 5–6&nbsp;GB, so give it time depending on your connection. Save it somewhere you'll find it again, like your Desktop or Downloads folder — you'll point Rufus at this file in the next step.</p>
+        </div>
+
+        <div class="alert info">
+          <div class="alert-head">ℹ Do this from a clean device if possible</div>
+          <p>If you have a second computer or can borrow one, download the ISO and build the USB drive there instead of on the infected machine. That way nothing from the infected system touches your installer.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STEP 3: RUFUS ================= -->
+    <section class="step" id="rufus">
+      <div class="step-head">
+        <div class="step-index">04</div>
+        <h2 class="step-title">Turn a USB drive into a Windows installer with Rufus</h2>
+      </div>
+      <div class="step-body">
+        <p>You'll need a USB flash drive with at least <strong>8 GB</strong> of space. Everything currently on it will be erased, so back it up first if it has anything on it.</p>
+
+        <div class="card">
+          <h3>Get Rufus</h3>
+          <p>Rufus is a small, free, open-source tool that writes an ISO to a USB drive and makes it bootable.</p>
+          <a class="btn" href="https://rufus.ie" target="_blank" rel="noopener">Download Rufus ↗</a>
+          <p style="color:var(--text-dim); font-size:13px; margin-top:8px;">Grab the regular version (not "portable" unless you prefer that) from the <strong>Download</strong> section of rufus.ie. No installation needed — it just runs.</p>
+        </div>
+
+        <div class="card">
+          <h3>Rufus settings, step by step</h3>
+          <table>
+            <tr><th>Field</th><th>What to set</th></tr>
+            <tr><td>Device</td><td>Select your USB drive from the dropdown. Double-check the drive letter and size so you don't pick the wrong disk.</td></tr>
+            <tr><td>Boot selection</td><td>Click <span class="kbd">SELECT</span> and choose the Windows ISO file you downloaded.</td></tr>
+            <tr><td>Partition scheme</td><td><span class="kbd">GPT</span> — correct for virtually all PCs made since ~2012 (UEFI firmware).</td></tr>
+            <tr><td>Target system</td><td><span class="kbd">UEFI (non-CSM)</span></td></tr>
+            <tr><td>File system</td><td><span class="kbd">NTFS</span> (Rufus will pick this automatically for Windows ISOs over 4&nbsp;GB)</td></tr>
+            <tr><td>Volume label</td><td>Leave as default, or name it something like <code>WIN_INSTALL</code></td></tr>
+          </table>
+          <p style="color:var(--text-dim); font-size:13px;">If you genuinely have an older BIOS-only (not UEFI) machine, use <span class="kbd">MBR</span> and <span class="kbd">BIOS or UEFI</span> instead — but for anything from the last decade, GPT + UEFI is correct.</p>
+        </div>
+
+        <div class="card">
+          <h3>Write it</h3>
+          <p>Click <strong>START</strong>. Rufus may ask whether to download some additional UEFI files — you can decline unless prompted otherwise. It will warn you that all data on the drive will be destroyed — confirm, since that's expected. Writing usually takes 5–15 minutes. When the status bar shows <strong>READY</strong>, it's done and safe to eject.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STEP 4: BOOT ================= -->
+    <section class="step" id="boot">
+      <div class="step-head">
+        <div class="step-index">05</div>
+        <h2 class="step-title">Boot your PC from the USB drive</h2>
+      </div>
+      <div class="step-body">
+        <p>Plug the USB drive into the infected computer, restart it, and interrupt the normal boot process to pick the USB drive instead. The key you press depends on the manufacturer — tap it repeatedly right as the PC powers on.</p>
+
+        <table>
+          <tr><th>Manufacturer</th><th>Boot menu key</th></tr>
+          <tr><td>Dell</td><td><span class="kbd">F12</span></td></tr>
+          <tr><td>HP</td><td><span class="kbd">F9</span> or <span class="kbd">Esc</span></td></tr>
+          <tr><td>Lenovo</td><td><span class="kbd">F12</span> or <span class="kbd">Novo button</span></td></tr>
+          <tr><td>ASUS</td><td><span class="kbd">F8</span> or <span class="kbd">Esc</span></td></tr>
+          <tr><td>Acer</td><td><span class="kbd">F12</span></td></tr>
+          <tr><td>MSI</td><td><span class="kbd">F11</span></td></tr>
+          <tr><td>Custom-built / motherboard BIOS</td><td>Usually <span class="kbd">F11</span> or <span class="kbd">Del</span> for full BIOS setup</td></tr>
+        </table>
+
+        <div class="card">
+          <h3>From the boot menu</h3>
+          <p>Select the entry matching your USB drive's name (it may show up twice — if so, pick the one labeled <strong>UEFI</strong>). Press <span class="kbd">Enter</span>. You should land on the "Windows Setup" screen with a language selector.</p>
+        </div>
+
+        <div class="alert warn">
+          <div class="alert-head">⚠ Nothing happens?</div>
+          <p>If the PC just boots into your old Windows instead of the USB menu, the boot order in BIOS may be putting the internal drive first, or Secure Boot / Fast Boot may be interfering. Restart, enter BIOS setup directly (often <span class="kbd">Del</span> or <span class="kbd">F2</span> at power-on), and either change the boot order or use the one-time boot menu option from there.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STEP 5: INSTALL ================= -->
+    <section class="step" id="install">
+      <div class="step-head">
+        <div class="step-index">06</div>
+        <h2 class="step-title">Install Windows — a real clean install</h2>
+      </div>
+      <div class="step-body">
+        <p>The part that actually matters for removing the infection: when you get to the drive selection screen, you need to delete the existing partitions rather than choosing "keep my files." Keeping files defeats the purpose of the reinstall.</p>
+
+        <ul class="checklist">
+          <li><input type="checkbox" id="i1"><label for="i1">Choose your language and keyboard layout, click <strong>Next</strong>, then <strong>Install Now</strong></label></li>
+          <li><input type="checkbox" id="i2"><label for="i2">Enter your product key, or click <strong>"I don't have a product key"</strong> if reinstalling on hardware that's already activated — Windows will usually re-activate automatically online</label></li>
+          <li><input type="checkbox" id="i3"><label for="i3">Choose <strong>Custom: Install Windows only (advanced)</strong> — not the upgrade option</label></li>
+          <li><input type="checkbox" id="i4"><label for="i4">On the drive list, select each partition on your main drive and click <strong>Delete</strong> until you're left with a single block of <strong>Unallocated Space</strong>
+            <span class="fine">This is the step that removes the infection — deleting partitions wipes the data those partitions held, including anything malware left behind.</span></label></li>
+          <li><input type="checkbox" id="i5"><label for="i5">Select the unallocated space and click <strong>Next</strong> — Windows will create the partitions it needs and begin installing</label></li>
+          <li><input type="checkbox" id="i6"><label for="i6">Let it run — the PC will restart itself a few times, this is normal. Follow the on-screen setup (region, keyboard, account) once it reaches the out-of-box experience</label></li>
+        </ul>
+
+        <div class="alert danger">
+          <div class="alert-head">⛔ Double-check the drive</div>
+          <p>If you have more than one drive installed, confirm you're deleting partitions on the correct one. External backup drives should stay unplugged during this step so there's no chance of picking the wrong disk.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STEP 6: AFTER ================= -->
+    <section class="step" id="after">
+      <div class="step-head">
+        <div class="step-index">07</div>
+        <h2 class="step-title">Lock everything down</h2>
+      </div>
+      <div class="step-body">
+        <p>The reinstall removes the malware. This step is about undoing the damage it may have already done — this part matters just as much.</p>
+
+        <div class="card">
+          <h3>Passwords &amp; accounts</h3>
+          <ul class="checklist">
+            <li><input type="checkbox" id="a1"><label for="a1">Change the password for every account you use, starting with email, banking, and anything tied to payments
+              <span class="fine">Do this from your newly clean device, not from a phone or device that was ever connected to the infected machine's network in a way that concerns you.</span></label></li>
+            <li><input type="checkbox" id="a2"><label for="a2">Turn on two-factor authentication (2FA) on email, banking, and any account that supports it</label></li>
+            <li><input type="checkbox" id="a3"><label for="a3">Sign out of active sessions on important accounts (most services have a "log out of all devices" or "manage sessions" option in security settings)</label></li>
+            <li><input type="checkbox" id="a4"><label for="a4">If you used a browser's built-in password saving, treat every saved password as exposed and change it — not just the ones you remember using recently</label></li>
+            <li><input type="checkbox" id="a5"><label for="a5">Consider moving to a dedicated password manager going forward, with a strong, unique master password</label></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Money &amp; identity</h3>
+          <ul class="checklist">
+            <li><input type="checkbox" id="a6"><label for="a6">Check bank and card statements for unfamiliar transactions; call your bank if anything looks off</label></li>
+            <li><input type="checkbox" id="a7"><label for="a7">If you use crypto wallets, move funds to a new wallet with a freshly generated seed phrase — seed phrases stored as text or screenshots are a top infostealer target</label></li>
+            <li><input type="checkbox" id="a8"><label for="a8">In the US, consider a free credit freeze with Equifax, Experian, and TransUnion if you're worried about identity theft</label></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>The clean machine itself</h3>
+          <ul class="checklist">
+            <li><input type="checkbox" id="a9"><label for="a9">Run Windows Update until it says you're fully up to date, including optional updates</label></li>
+            <li><input type="checkbox" id="a10"><label for="a10">Confirm Windows Defender (or your antivirus of choice) is enabled and updated</label></li>
+            <li><input type="checkbox" id="a11"><label for="a11">Scan your backup drive with antivirus before opening any files from it</label></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STEP 7: PREVENTION ================= -->
+    <section class="step" id="prevent">
+      <div class="step-head">
+        <div class="step-index">08</div>
+        <h2 class="step-title">Stay clean going forward</h2>
+      </div>
+      <div class="step-body">
+        <p>Infostealers almost always get in through a cracked program, a fake "free download" of paid software, a malicious game mod or cheat, or an email attachment. A few habits go a long way:</p>
+        <div class="card">
+          <ul class="checklist">
+            <li><input type="checkbox" id="p1"><label for="p1">Only install software from the developer's official site or a legitimate store (Microsoft Store, Steam, etc.)</label></li>
+            <li><input type="checkbox" id="p2"><label for="p2">Avoid "cracked" or "free" versions of paid software — this is one of the most common infostealer delivery methods</label></li>
+            <li><input type="checkbox" id="p3"><label for="p3">Use a password manager instead of your browser's built-in saved passwords, so there's nothing sitting in a browser database for malware to scrape</label></li>
+            <li><input type="checkbox" id="p4"><label for="p4">Keep 2FA on for anything important, ideally with an authenticator app rather than SMS</label></li>
+            <li><input type="checkbox" id="p5"><label for="p5">Keep antivirus and Windows Update on and current</label></li>
+          </ul>
+        </div>
+
+        <div class="alert safe">
+          <div class="alert-head">✓ You've got this</div>
+          <p>Once you've worked through this checklist, your device is clean and your accounts are re-secured. It's a genuinely annoying process, but a full reinstall plus a real password reset is the most reliable way to put an infostealer incident fully behind you.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      This guide covers a general clean-reinstall recovery for a personal Windows PC. If this device is used for work, notify your IT or security team before reinstalling — some incidents need to be preserved or investigated first. If financial fraud or identity theft occurred, consider also filing a report with your bank and, in the US, at IdentityTheft.gov.
+    </footer>
+
+  </main>
+</div>
 
 <script>
-  // Score bar + meter fill on scroll into view
-  const fills = document.querySelectorAll('.score-fill, .meter-fill');
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        const el = e.target;
-        const val = el.dataset.score || el.dataset.w;
-        el.style.width = val + '%';
-        io.unobserve(el);
-      }
-    });
-  },{threshold:0.4});
-  fills.forEach(f=>io.observe(f));
+  const boxes = Array.from(document.querySelectorAll('.checklist input[type=checkbox]'));
+  const fill = document.getElementById('meterFill');
+  const pct = document.getElementById('meterPct');
+  const status = document.getElementById('meterStatus');
 
-  // Rankings filter
-  const filters = document.querySelectorAll('.filter');
-  const rows = document.querySelectorAll('.rank-table tbody tr');
-  filters.forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      filters.forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      const f = btn.dataset.filter;
-      rows.forEach(r=>{
-        const cats = r.dataset.cat || '';
-        r.style.display = (f==='all' || cats.includes(f)) ? '' : 'none';
-      });
+  function update(){
+    const checked = boxes.filter(b => b.checked).length;
+    const ratio = boxes.length ? checked / boxes.length : 0;
+    const percent = Math.round(ratio * 100);
+    fill.style.width = percent + '%';
+    pct.textContent = percent + '%';
+
+    let label, color;
+    if (ratio === 0){ label = 'COMPROMISED'; color = 'var(--danger)'; }
+    else if (ratio < 0.4){ label = 'CONTAINING'; color = 'var(--danger)'; }
+    else if (ratio < 0.75){ label = 'REBUILDING'; color = 'var(--warn)'; }
+    else if (ratio < 1){ label = 'SECURING'; color = 'var(--info)'; }
+    else { label = 'SYSTEM CLEAN'; color = 'var(--safe)'; }
+
+    status.textContent = label;
+    status.style.color = color;
+    fill.style.background = ratio < 1
+      ? 'linear-gradient(90deg, var(--danger), var(--warn))'
+      : 'var(--safe)';
+  }
+
+  boxes.forEach(b => {
+    b.addEventListener('change', () => {
+      b.closest('li').classList.toggle('checked', b.checked);
+      update();
     });
   });
+
+  update();
 </script>
 
 </body>
