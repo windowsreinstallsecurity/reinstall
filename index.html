@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MouseLab — Gaming Mice, Tested the Same Way Every Time</title>
+<meta name="description" content="Independent gaming mouse reviews and rankings, scored on sensor accuracy, click latency, build quality and value. No sponsored placements.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1015;
+    --bg-alt:#0f1319;
+    --panel:#12161d;
+    --panel-raised:#171c24;
+    --border:#232a35;
+    --border-hover:#3a4557;
+    --text:#e7e9ec;
+    --text-dim:#8b93a1;
+    --text-faint:#565f6c;
+    --amber:#e8a33d;
+    --amber-soft:rgba(232,163,61,.14);
+    --cyan:#5fd4d0;
+    --cyan-soft:rgba(95,212,208,.14);
+    --good:#7cc66f;
+    --bad:#e0685a;
+    --radius:14px;
+    --display:'Space Grotesk',Arial,sans-serif;
+    --body:'IBM Plex Sans',Arial,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,.045) 1px, transparent 0) 0 0/28px 28px,
+      var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  ::selection{background:var(--amber-soft);color:var(--amber);}
+  :focus-visible{outline:2px solid var(--cyan);outline-offset:3px;}
+
+  .wrap{width:min(1180px,92%);margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+  }
+  h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.01em;}
+
+  /* ---------- NAV ---------- */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(13,16,21,.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 0;
+  }
+  .logo{
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--display);font-weight:700;font-size:19px;
+    letter-spacing:-.01em;
+  }
+  .logo-mark{
+    width:22px;height:22px;border:1.5px solid var(--amber);border-radius:5px;
+    position:relative;flex:none;
+  }
+  .logo-mark::before,.logo-mark::after{
+    content:"";position:absolute;background:var(--amber);
+  }
+  .logo-mark::before{left:4px;right:4px;top:9px;height:2px;}
+  .logo-mark::after{top:4px;bottom:4px;left:9px;width:2px;}
+  .logo small{
+    display:block;font-family:var(--mono);font-weight:400;font-size:10px;
+    letter-spacing:.12em;color:var(--text-faint);text-transform:uppercase;
+  }
+  nav.links{display:flex;gap:28px;font-size:14px;}
+  nav.links a{
+    color:var(--text-dim);text-decoration:none;
+    padding:6px 0;border-bottom:1px solid transparent;
+    transition:.2s;
+  }
+  nav.links a:hover{color:var(--text);border-color:var(--border-hover);}
+  @media(max-width:820px){nav.links{display:none;}}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:72px 0 40px;border-bottom:1px solid var(--border);}
+  .hero-grid{
+    display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:end;
+  }
+  .hero h1{
+    font-size:clamp(34px,4.6vw,54px);
+    line-height:1.06;
+    margin:14px 0 20px;
+  }
+  .hero h1 em{
+    font-style:normal;color:var(--amber);
+  }
+  .hero p.lede{
+    color:var(--text-dim);font-size:17px;max-width:52ch;
+  }
+  .hero-cta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap;}
+  .btn{
+    font-family:var(--mono);font-size:13px;letter-spacing:.04em;
+    padding:12px 20px;border-radius:9px;text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid var(--border-hover);transition:.2s;
+  }
+  .btn.primary{background:var(--amber);color:#1a1305;border-color:var(--amber);font-weight:600;}
+  .btn.primary:hover{background:#f0b158;}
+  .btn.ghost{color:var(--text-dim);}
+  .btn.ghost:hover{color:var(--text);border-color:var(--text-dim);}
+
+  .readout{
+    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+    padding:22px;
+  }
+  .readout .eyebrow{margin-bottom:14px;}
+  .readout-row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:11px 0;border-bottom:1px dashed var(--border);
+    font-family:var(--mono);font-size:13px;
+  }
+  .readout-row:last-child{border-bottom:none;}
+  .readout-row span:first-child{color:var(--text-dim);}
+  .readout-row span:last-child{color:var(--cyan);font-weight:600;}
+
+  /* ---------- METHOD STRIP ---------- */
+  .method{padding:56px 0;border-bottom:1px solid var(--border);}
+  .method-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:28px;flex-wrap:wrap;}
+  .method-head h2{font-size:26px;}
+  .method-head p{color:var(--text-dim);font-size:14px;max-width:44ch;}
+  .method-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+  .method-col{background:var(--panel);padding:24px 22px;}
+  .method-col .num{font-family:var(--mono);color:var(--amber);font-size:13px;}
+  .method-col h3{font-size:16px;margin:10px 0 8px;}
+  .method-col p{color:var(--text-dim);font-size:13.5px;}
+  @media(max-width:900px){.method-cols{grid-template-columns:1fr 1fr;}}
+  @media(max-width:560px){.method-cols{grid-template-columns:1fr;}}
+
+  /* ---------- RANKINGS ---------- */
+  .rankings{padding:60px 0;border-bottom:1px solid var(--border);}
+  .section-head{margin-bottom:22px;}
+  .section-head h2{font-size:28px;margin-bottom:8px;}
+  .section-head p{color:var(--text-dim);font-size:14.5px;max-width:60ch;}
+
+  .filters{display:flex;gap:10px;margin:22px 0;flex-wrap:wrap;}
+  .filter{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;
+    padding:8px 14px;border-radius:20px;border:1px solid var(--border);
+    background:transparent;color:var(--text-dim);cursor:pointer;transition:.15s;
+  }
+  .filter:hover{border-color:var(--border-hover);color:var(--text);}
+  .filter.active{background:var(--amber-soft);border-color:var(--amber);color:var(--amber);}
+
+  table.rank-table{width:100%;border-collapse:collapse;font-size:14px;}
+  table.rank-table thead th{
+    text-align:left;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--text-faint);font-weight:500;
+    padding:0 14px 12px;border-bottom:1px solid var(--border);
+  }
+  table.rank-table tbody tr{border-bottom:1px solid var(--border);transition:.15s;}
+  table.rank-table tbody tr:hover{background:var(--panel);}
+  table.rank-table td{padding:16px 14px;vertical-align:middle;}
+  table.rank-table td.rk{font-family:var(--mono);color:var(--text-faint);width:34px;}
+  table.rank-table td.name a{text-decoration:none;font-weight:600;}
+  table.rank-table td.name a:hover{color:var(--cyan);}
+  table.rank-table td.name span{display:block;font-size:12px;color:var(--text-dim);margin-top:2px;}
+  .score-cell{display:flex;align-items:center;gap:10px;min-width:120px;}
+  .score-track{flex:1;height:6px;background:var(--border);border-radius:4px;overflow:hidden;}
+  .score-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--amber));width:0;border-radius:4px;transition:width 1s cubic-bezier(.2,.8,.2,1);}
+  .score-num{font-family:var(--mono);font-size:12.5px;color:var(--text-dim);width:30px;text-align:right;}
+  td.mono{font-family:var(--mono);color:var(--text-dim);font-size:13px;}
+
+  /* ---------- REVIEWS ---------- */
+  .reviews{padding:70px 0;border-bottom:1px solid var(--border);}
+  .review-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:20px;
+    padding:36px;margin-bottom:28px;
+    display:grid;grid-template-columns:340px 1fr;gap:36px;
+    scroll-margin-top:90px;
+    position:relative;
+  }
+  @media(max-width:880px){.review-card{grid-template-columns:1fr;}}
+
+  .shot{
+    background:
+      linear-gradient(var(--bg-alt),var(--bg-alt)),
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 0) 0 0/16px 16px;
+    background-blend-mode:normal;
+    border:1px solid var(--border);border-radius:14px;
+    min-height:230px;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-faint);font-family:var(--mono);font-size:12px;text-align:center;
+    letter-spacing:.04em;
+  }
+  .shot .corner{position:absolute;width:16px;height:16px;border:1.5px solid var(--border-hover);}
+  .shot .corner.tl{top:10px;left:10px;border-right:none;border-bottom:none;}
+  .shot .corner.tr{top:10px;right:10px;border-left:none;border-bottom:none;}
+  .shot .corner.bl{bottom:10px;left:10px;border-right:none;border-top:none;}
+  .shot .corner.br{bottom:10px;right:10px;border-left:none;border-top:none;}
+  .shot span{padding:0 30px;line-height:1.6;}
+
+  .stamp{
+    position:absolute;top:-14px;right:28px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--amber);border:1.5px dashed var(--amber);border-radius:50px;
+    padding:6px 14px;background:var(--bg);transform:rotate(4deg);
+  }
+
+  .rev-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  .rev-head h3{font-size:23px;}
+  .rev-head .tag{font-family:var(--mono);font-size:12px;color:var(--cyan);background:var(--cyan-soft);padding:5px 10px;border-radius:6px;white-space:nowrap;}
+  .verdict{
+    font-size:15px;color:var(--text-dim);margin:14px 0 18px;padding-left:14px;
+    border-left:2px solid var(--amber);
+  }
+  .verdict strong{color:var(--text);font-weight:600;}
+
+  .meters{display:grid;grid-template-columns:1fr 1fr;gap:14px 26px;margin:20px 0;}
+  .meter label{
+    display:flex;justify-content:space-between;font-family:var(--mono);font-size:11.5px;
+    color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;
+  }
+  .meter label b{color:var(--text-dim);font-weight:500;}
+  .meter-track{
+    height:7px;border-radius:4px;background:var(--border);position:relative;overflow:hidden;
+    background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 1px,transparent 1px 10%);
+  }
+  .meter-fill{height:100%;width:0;border-radius:4px;background:var(--cyan);transition:width 1.1s cubic-bezier(.2,.8,.2,1);}
+
+  .pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:22px 0;}
+  .pc-grid h4{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+  .pc-grid.pros h4{color:var(--good);}
+  .pc-grid ul{list-style:none;font-size:13.5px;color:var(--text-dim);}
+  .pc-grid li{padding-left:16px;position:relative;margin-bottom:6px;}
+  .pc-grid li::before{content:"+";position:absolute;left:0;color:var(--good);font-weight:600;}
+  .cons li::before{content:"–";color:var(--bad);}
+  @media(max-width:520px){.pc-grid{grid-template-columns:1fr;}.meters{grid-template-columns:1fr;}}
+
+  .rev-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-top:22px;padding-top:20px;border-top:1px solid var(--border);}
+  .rev-foot .who{font-size:13px;color:var(--text-dim);}
+  .rev-foot .who b{color:var(--text);}
+  .price{font-family:var(--mono);font-size:19px;color:var(--amber);}
+  .price small{color:var(--text-faint);font-size:12px;font-weight:400;}
+
+  /* ---------- COMPARISONS ---------- */
+  .compare{padding:64px 0;border-bottom:1px solid var(--border);}
+  .vs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:24px;}
+  .vs-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px;}
+  .vs-title{font-family:var(--mono);font-size:13px;color:var(--text-dim);margin-bottom:10px;}
+  .vs-title b{color:var(--text);}
+  .vs-card p{font-size:14px;color:var(--text-dim);}
+  .vs-card a{color:var(--cyan);font-family:var(--mono);font-size:12.5px;text-decoration:none;display:inline-block;margin-top:12px;}
+  @media(max-width:700px){.vs-grid{grid-template-columns:1fr;}}
+
+  /* ---------- GLOSSARY ---------- */
+  .glossary{padding:64px 0;border-bottom:1px solid var(--border);}
+  .qa{border-bottom:1px solid var(--border);}
+  .qa summary{
+    cursor:pointer;list-style:none;padding:18px 0;font-family:var(--display);font-weight:600;
+    font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:20px;
+  }
+  .qa summary::-webkit-details-marker{display:none;}
+  .qa summary::after{content:"+";font-family:var(--mono);color:var(--amber);font-size:20px;transition:.2s;}
+  .qa[open] summary::after{transform:rotate(45deg);}
+  .qa p{padding:0 0 20px;color:var(--text-dim);font-size:14.5px;max-width:70ch;}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:44px 0 60px;}
+  .foot-grid{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;font-size:13px;color:var(--text-faint);}
+  .foot-grid a{color:var(--text-dim);text-decoration:none;}
+  .foot-grid a:hover{color:var(--text);}
+  .foot-cols{display:flex;gap:50px;flex-wrap:wrap;}
+  .foot-cols div h5{font-family:var(--mono);color:var(--text-dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+  .foot-cols div a{display:block;margin-bottom:7px;}
+  .disclosure{margin-top:34px;padding-top:22px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text-faint);max-width:68ch;}
+
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none !important;scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav-row">
+    <div class="logo">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <div>MouseLab<small>Precision gear testing</small></div>
+    </div>
+    <nav class="links">
+      <a href="#rankings">Rankings</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#compare">Comparisons</a>
+      <a href="#glossary">Glossary</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Gaming mouse test lab — 2026 rankings</p>
+      <h1>Every mouse runs the <em>same four tests.</em> No exceptions.</h1>
+      <p class="lede">We score sensor accuracy, click latency, build quality, and value on a fixed rubric — so a $40 mouse and a $160 mouse are judged on the same scale, not on marketing copy.</p>
+      <div class="hero-cta">
+        <a class="btn primary" href="#rankings">See current rankings ↓</a>
+        <a class="btn ghost" href="#method">How we test →</a>
+      </div>
+    </div>
+    <div class="readout">
+      <p class="eyebrow">Bench readout — live rubric</p>
+      <div class="readout-row"><span>Sensor accuracy</span><span>±0.2% max error</span></div>
+      <div class="readout-row"><span>Click latency</span><span>tested @ 1000–8000Hz</span></div>
+      <div class="readout-row"><span>Build sample</span><span>3 units per model</span></div>
+      <div class="readout-row"><span>Mice tracked</span><span>current: 4 · db growing</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="method" id="method">
+  <div class="wrap">
+    <div class="method-head">
+      <h2>How we score a mouse</h2>
+      <p>Four categories, weighted evenly, turned into one comparable number out of 10.</p>
+    </div>
+    <div class="method-cols">
+      <div class="method-col">
+        <span class="num">01</span>
+        <h3>Sensor accuracy</h3>
+        <p>Tracked against a controlled surface pass to check for smoothing, jitter, and DPI drift at the sensor's rated range.</p>
+      </div>
+      <div class="method-col">
+        <span class="num">02</span>
+        <h3>Click &amp; input latency</h3>
+        <p>End-to-end click response measured across polling rates, including wireless mice at both 1000Hz and 8000Hz where supported.</p>
+      </div>
+      <div class="method-col">
+        <span class="num">03</span>
+        <h3>Build &amp; materials</h3>
+        <p>Shell flex, switch consistency after repeated clicks, cable or dongle quality, and coating durability under sweat and grip.</p>
+      </div>
+      <div class="method-col">
+        <span class="num">04</span>
+        <h3>Value</h3>
+        <p>Performance relative to street price, not MSRP — and whether a cheaper model in the same class gets you 90% of the result.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="rankings" id="rankings">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>2026 gaming mouse rankings</h2>
+      <p>Ranked by overall bench score. Filter by what you're actually optimizing for — a competitive FPS pick and a budget pick don't need to be the same mouse.</p>
+    </div>
+    <div class="filters" role="group" aria-label="Filter rankings">
+      <button class="filter active" data-filter="all">All</button>
+      <button class="filter" data-filter="budget">Budget</button>
+      <button class="filter" data-filter="lightweight">Lightweight</button>
+      <button class="filter" data-filter="competitive">Competitive</button>
+      <button class="filter" data-filter="allround">All-round</button>
+    </div>
+
+    <table class="rank-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Mouse</th><th>Score</th><th>Price</th><th>Weight</th><th>Sensor</th><th>Best for</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-cat="competitive allround">
+          <td class="rk">01</td>
+          <td class="name"><a href="#viper-v3-pro">Razer Viper V3 Pro</a><span>Wireless · Symmetrical</span></td>
+          <td><div class="score-cell"><div class="score-track"><div class="score-fill" data-score="94"></div></div><span class="score-num">9.4</span></div></td>
+          <td class="mono">$160</td>
+          <td class="mono">54g</td>
+          <td class="mono">Focus Pro 35K</td>
+          <td class="mono">Competitive FPS</td>
+        </tr>
+        <tr data-cat="allround competitive">
+          <td class="rk">02</td>
+          <td class="name"><a href="#superlight-2">G Pro X Superlight 2</a><span>Wireless · Ergonomic</span></td>
+          <td><div class="score-cell"><div class="score-track"><div class="score-fill" data-score="90"></div></div><span class="score-num">9.0</span></div></td>
+          <td class="mono">$159</td>
+          <td class="mono">60g</td>
+          <td class="mono">HERO 2</td>
+          <td class="mono">All-round premium</td>
+        </tr>
+        <tr data-cat="lightweight budget">
+          <td class="rk">03</td>
+          <td class="name"><a href="#attack-shark-x3">Attack Shark X3</a><span>Wireless · Symmetrical</span></td>
+          <td><div class="score-cell"><div class="score-track"><div class="score-fill" data-score="84"></div></div><span class="score-num">8.4</span></div></td>
+          <td class="mono">$40</td>
+          <td class="mono">49g</td>
+          <td class="mono">PAW3395</td>
+          <td class="mono">Lightweight on a budget</td>
+        </tr>
+        <tr data-cat="budget">
+          <td class="rk">04</td>
+          <td class="name"><a href="#g305">Logitech G305</a><span>Wireless · Ergonomic</span></td>
+          <td><div class="score-cell"><div class="score-track"><div class="score-fill" data-score="78"></div></div><span class="score-num">7.8</span></div></td>
+          <td class="mono">$40</td>
+          <td class="mono">99g</td>
+          <td class="mono">HERO</td>
+          <td class="mono">First wireless upgrade</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="reviews" id="reviews">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Full reviews</h2>
+      <p>Each score below breaks down the same four categories from the rubric above, so you can see exactly where a mouse wins or loses.</p>
+    </div>
+
+    <!-- VIPER V3 PRO -->
+    <article class="review-card" id="viper-v3-pro">
+      <span class="stamp">Editor's pick</span>
+      <div class="shot">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <span>PRODUCT PHOTO<br>Razer Viper V3 Pro — top &amp; side angle, 1200×900</span>
+      </div>
+      <div class="rev-body">
+        <div class="rev-head">
+          <h3>Razer Viper V3 Pro</h3>
+          <span class="tag">Rank #1 · Competitive</span>
+        </div>
+        <p class="verdict"><strong>Buy this if</strong> you play at a competitive level and want the lowest latency available at any weight — you're paying for the sensor and switches, not extras.</p>
+        <div class="meters">
+          <div class="meter"><label><span>Sensor accuracy</span><b>9.6</b></label><div class="meter-track"><div class="meter-fill" data-w="96"></div></div></div>
+          <div class="meter"><label><span>Click latency</span><b>9.7</b></label><div class="meter-track"><div class="meter-fill" data-w="97"></div></div></div>
+          <div class="meter"><label><span>Build quality</span><b>9.1</b></label><div class="meter-track"><div class="meter-fill" data-w="91"></div></div></div>
+          <div class="meter"><label><span>Value</span><b>8.2</b></label><div class="meter-track"><div class="meter-fill" data-w="82"></div></div></div>
+        </div>
+        <div class="pc-grid">
+          <div class="pros"><h4>Pros</h4><ul>
+            <li>Fastest click response we've measured in this class</li>
+            <li>54g shell with no rattle or flex under fast flicks</li>
+            <li>HyperPolling dongle scales cleanly to 8000Hz</li>
+          </ul></div>
+          <div class="cons"><h4>Cons</h4><ul>
+            <li>Symmetrical shape won't suit heavy palm grips</li>
+            <li>8000Hz mode noticeably shortens battery life</li>
+          </ul></div>
+        </div>
+        <div class="rev-foot">
+          <div class="who">Best for <b>Valorant, CS2, competitive FPS</b></div>
+          <div class="price">$160<small>street price</small></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SUPERLIGHT 2 -->
+    <article class="review-card" id="superlight-2">
+      <div class="shot">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <span>PRODUCT PHOTO<br>G Pro X Superlight 2 — top &amp; side angle, 1200×900</span>
+      </div>
+      <div class="rev-body">
+        <div class="rev-head">
+          <h3>Logitech G Pro X Superlight 2</h3>
+          <span class="tag">Rank #2 · All-round</span>
+        </div>
+        <p class="verdict"><strong>Buy this if</strong> you want one mouse for everything — FPS, MMO, and daily use — with an ergonomic shape most hands adapt to quickly.</p>
+        <div class="meters">
+          <div class="meter"><label><span>Sensor accuracy</span><b>9.4</b></label><div class="meter-track"><div class="meter-fill" data-w="94"></div></div></div>
+          <div class="meter"><label><span>Click latency</span><b>9.0</b></label><div class="meter-track"><div class="meter-fill" data-w="90"></div></div></div>
+          <div class="meter"><label><span>Build quality</span><b>9.3</b></label><div class="meter-track"><div class="meter-fill" data-w="93"></div></div></div>
+          <div class="meter"><label><span>Value</span><b>7.5</b></label><div class="meter-track"><div class="meter-fill" data-w="75"></div></div></div>
+        </div>
+        <div class="pc-grid">
+          <div class="pros"><h4>Pros</h4><ul>
+            <li>HERO 2 sensor is essentially error-free at any DPI</li>
+            <li>Shape works for claw, fingertip, and relaxed palm grips</li>
+            <li>Excellent LIGHTSPEED battery life at 1000Hz</li>
+          </ul></div>
+          <div class="cons"><h4>Cons</h4><ul>
+            <li>No 4000Hz+ polling without the separate Lightspeed dongle upgrade</li>
+            <li>Price rarely drops much below MSRP</li>
+          </ul></div>
+        </div>
+        <div class="rev-foot">
+          <div class="who">Best for <b>players who want one mouse, period</b></div>
+          <div class="price">$159<small>street price</small></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ATTACK SHARK X3 -->
+    <article class="review-card" id="attack-shark-x3">
+      <span class="stamp">Best value</span>
+      <div class="shot">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <span>PRODUCT PHOTO<br>Attack Shark X3 — top &amp; side angle, 1200×900</span>
+      </div>
+      <div class="rev-body">
+        <div class="rev-head">
+          <h3>Attack Shark X3</h3>
+          <span class="tag">Rank #3 · Lightweight</span>
+        </div>
+        <p class="verdict"><strong>Buy this if</strong> you want a sub-50g wireless mouse without paying flagship prices — the sensor punches well above its $40 tag.</p>
+        <div class="meters">
+          <div class="meter"><label><span>Sensor accuracy</span><b>8.8</b></label><div class="meter-track"><div class="meter-fill" data-w="88"></div></div></div>
+          <div class="meter"><label><span>Click latency</span><b>8.1</b></label><div class="meter-track"><div class="meter-fill" data-w="81"></div></div></div>
+          <div class="meter"><label><span>Build quality</span><b>7.6</b></label><div class="meter-track"><div class="meter-fill" data-w="76"></div></div></div>
+          <div class="meter"><label><span>Value</span><b>9.8</b></label><div class="meter-track"><div class="meter-fill" data-w="98"></div></div></div>
+        </div>
+        <div class="pc-grid">
+          <div class="pros"><h4>Pros</h4><ul>
+            <li>49g shell with a PAW3395 sensor rarely seen this cheap</li>
+            <li>Rechargeable — no AA battery weight penalty</li>
+            <li>Shell holes are covered, so no dust/debris complaints</li>
+          </ul></div>
+          <div class="cons"><h4>Cons</h4><ul>
+            <li>Side buttons feel mushy compared to premium mice</li>
+            <li>Coating shows palm grease faster than soft-touch finishes</li>
+          </ul></div>
+        </div>
+        <div class="rev-foot">
+          <div class="who">Best for <b>budget-conscious FPS players</b></div>
+          <div class="price">$40<small>street price</small></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- G305 -->
+    <article class="review-card" id="g305">
+      <div class="shot">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <span>PRODUCT PHOTO<br>Logitech G305 — top &amp; side angle, 1200×900</span>
+      </div>
+      <div class="rev-body">
+        <div class="rev-head">
+          <h3>Logitech G305 LIGHTSPEED</h3>
+          <span class="tag">Rank #4 · Budget</span>
+        </div>
+        <p class="verdict"><strong>Buy this if</strong> it's your first wireless mouse and you want something that just works for months on one AA battery, weight be damned.</p>
+        <div class="meters">
+          <div class="meter"><label><span>Sensor accuracy</span><b>8.6</b></label><div class="meter-track"><div class="meter-fill" data-w="86"></div></div></div>
+          <div class="meter"><label><span>Click latency</span><b>7.9</b></label><div class="meter-track"><div class="meter-fill" data-w="79"></div></div></div>
+          <div class="meter"><label><span>Build quality</span><b>8.3</b></label><div class="meter-track"><div class="meter-fill" data-w="83"></div></div></div>
+          <div class="meter"><label><span>Value</span><b>8.9</b></label><div class="meter-track"><div class="meter-fill" data-w="89"></div></div></div>
+        </div>
+        <div class="pc-grid">
+          <div class="pros"><h4>Pros</h4><ul>
+            <li>Up to ~250 hours per AA battery in our runtime test</li>
+            <li>HERO sensor still holds up years after release</li>
+            <li>One of the most reliable 2.4GHz connections we've tested</li>
+          </ul></div>
+          <div class="cons"><h4>Cons</h4><ul>
+            <li>99g is heavy next to modern sub-60g competitors</li>
+            <li>No onboard 8000Hz support</li>
+          </ul></div>
+        </div>
+        <div class="rev-foot">
+          <div class="who">Best for <b>Minecraft, casual FPS, office-to-gaming upgrades</b></div>
+          <div class="price">$40<small>street price</small></div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="compare" id="compare">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Head-to-head comparisons</h2>
+      <p>The matchups people actually search before buying.</p>
+    </div>
+    <div class="vs-grid">
+      <div class="vs-card">
+        <div class="vs-title"><b>G305</b> vs <b>Attack Shark X3</b></div>
+        <p>Both cost about $40. The X3 is lighter and has the newer sensor; the G305 wins on battery life and connection reliability. If weight matters more than runtime, take the X3.</p>
+        <a href="#">Read the full comparison →</a>
+      </div>
+      <div class="vs-card">
+        <div class="vs-title"><b>Viper V3 Pro</b> vs <b>Superlight 2</b></div>
+        <p>The Viper edges out on raw latency and 8000Hz polling; the Superlight 2's shape fits a wider range of grips. Shape should decide this one before spec sheets do.</p>
+        <a href="#">Read the full comparison →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="glossary" id="glossary">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Terms worth knowing</h2>
+      <p>Short answers, no fluff.</p>
+    </div>
+    <details class="qa" open>
+      <summary>What is polling rate?</summary>
+      <p>How often your mouse reports its position to your PC, measured in Hz. 1000Hz means it reports 1,000 times per second. Higher polling can lower click latency slightly, but the gain shrinks fast past 1000Hz for most players.</p>
+    </details>
+    <details class="qa">
+      <summary>Does 8000Hz actually matter?</summary>
+      <p>It reduces the small delay between a physical click and the signal reaching your PC, but the difference versus 1000Hz is a few milliseconds — noticeable at a competitive level, close to unnoticeable for casual play, and it costs battery life on wireless mice.</p>
+    </details>
+    <details class="qa">
+      <summary>What grip style should I use?</summary>
+      <p>Palm grip rests your whole hand on the mouse and suits larger, heavier shapes. Claw grip arches the fingers and works well with shorter mice. Fingertip grip only touches with fingertips and favors light, symmetrical shapes. Try each with a mouse you already own before buying based on grip alone.</p>
+    </details>
+    <details class="qa">
+      <summary>Does DPI matter more than sensor accuracy?</summary>
+      <p>Not really. Almost every modern sensor tracks accurately well past the DPI most players actually use (800–1600). A cheap sensor at high DPI is still a cheap sensor — accuracy and consistency matter more than the DPI ceiling on the box.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="logo" style="margin-bottom:10px;">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <div>MouseLab</div>
+        </div>
+        <p style="max-width:32ch;">Independent gaming mouse testing. We buy what we review.</p>
+      </div>
+      <div class="foot-cols">
+        <div>
+          <h5>Browse</h5>
+          <a href="#rankings">Rankings</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#compare">Comparisons</a>
+          <a href="#glossary">Glossary</a>
+        </div>
+        <div>
+          <h5>By use case</h5>
+          <a href="#">Best for FPS</a>
+          <a href="#">Best for MMO</a>
+          <a href="#">Best budget picks</a>
+        </div>
+      </div>
+    </div>
+    <p class="disclosure">MouseLab © 2026. Some links may be affiliate links — if you buy through them we may earn a commission at no extra cost to you. This never affects a score; scores are locked before we write the pros/cons.</p>
+  </div>
+</footer>
+
+<script>
+  // Score bar + meter fill on scroll into view
+  const fills = document.querySelectorAll('.score-fill, .meter-fill');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const el = e.target;
+        const val = el.dataset.score || el.dataset.w;
+        el.style.width = val + '%';
+        io.unobserve(el);
+      }
+    });
+  },{threshold:0.4});
+  fills.forEach(f=>io.observe(f));
+
+  // Rankings filter
+  const filters = document.querySelectorAll('.filter');
+  const rows = document.querySelectorAll('.rank-table tbody tr');
+  filters.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      filters.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      rows.forEach(r=>{
+        const cats = r.dataset.cat || '';
+        r.style.display = (f==='all' || cats.includes(f)) ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
